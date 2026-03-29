@@ -277,19 +277,52 @@
       box-shadow: 0 0 0 3px rgba(249,115,22,.15);
     }
     .form-group input::placeholder { color: #a8a29e; }
-    .connection-help {
+    .helper-note {
       font-size: .82rem;
       color: var(--text-muted);
       line-height: 1.5;
       margin-top: -4px;
     }
-    .connection-help code {
+    .helper-note code {
       background: #ffedd5;
       border: 1px solid var(--orange-border);
       border-radius: 6px;
       padding: 1px 6px;
       color: #9a3412;
       font-size: .8rem;
+    }
+    .composer {
+      margin-top: 24px;
+      background: #fff;
+      border: 1.5px solid #e7e5e4;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .composer h3 {
+      font-size: 1rem;
+      color: #7c2d12;
+    }
+    .composer textarea {
+      min-height: 110px;
+      resize: vertical;
+      border: 1.5px solid var(--orange-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: .97rem;
+      color: var(--text);
+      outline: none;
+    }
+    .composer textarea:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+    }
+    .composer-meta {
+      font-size: .82rem;
+      color: var(--text-muted);
     }
     .btn-join {
       width: 100%;
@@ -382,14 +415,13 @@
     <!-- SUBSCRIBE -->
     <div class="subscribe-section">
       <h2>🕊 Join the Community</h2>
-      <p>Get Alexandra's updates the moment she posts. Choose instant email alerts, browser push notifications, or both.</p>
+      <p>Get Alexandra's updates the moment she posts. People join with email, and you can write a message below then click send to subscribers.</p>
 
       <div id="subscribe-form">
         <div class="form-group">
           <input type="text" id="sub-name" placeholder="Your name" autocomplete="name" />
           <input type="email" id="sub-email" placeholder="Your email address" autocomplete="email" required />
-          <input type="url" id="sub-webhook" placeholder="Your subscription connection URL (webhook)" value="https://hooks.tasklet.ai/whe_xd10av30qct959h8bca4" />
-          <p class="connection-help">If you see “Failed to fetch”, paste your own endpoint (Formspree/Zapier/Make webhook) in this box. Must start with <code>https://</code>.</p>
+          <p class="helper-note">No webhook needed. Subscribers are saved in this browser and you can send them your latest message with one click.</p>
           <div class="preference-group">
             <label class="preference-option">
               <input type="checkbox" id="pref-instant-email" checked disabled />
@@ -409,6 +441,14 @@
       <div class="success-msg" id="success-msg">
         Thank you! God bless you 🙏<br/>
         <small style="font-weight:400;font-size:.9rem;">You'll receive Alexandra's messages in your inbox.</small>
+      </div>
+
+      <div class="composer">
+        <h3>✍️ Write a message to subscribers</h3>
+        <textarea id="broadcast-message" placeholder="Write your message here..."></textarea>
+        <button class="btn-join" id="btn-send-message" onclick="sendMessageToSubscribers()">Send Message to Subscribers</button>
+        <p class="composer-meta" id="subscriber-count">Subscribers in this browser: 0</p>
+        <p class="helper-note">On send, this opens your email app with all subscriber emails in BCC so you can send instantly.</p>
       </div>
     </div>
 
@@ -438,18 +478,70 @@
     document.getElementById('daily-verse-ref').textContent = '— ' + todayVerse.ref;
 
     // ── SUBSCRIBE ──
+    const STORAGE_KEYS = {
+      subscribers: 'walk_with_god_subscribers',
+      latestMessage: 'walk_with_god_latest_message'
+    };
+
+    function getSubscribers() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.subscribers);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveSubscribers(subscribers) {
+      localStorage.setItem(STORAGE_KEYS.subscribers, JSON.stringify(subscribers));
+      updateSubscriberCount();
+    }
+
+    function updateSubscriberCount() {
+      const count = getSubscribers().length;
+      const countEl = document.getElementById('subscriber-count');
+      if (countEl) {
+        countEl.textContent = `Subscribers in this browser: ${count}`;
+      }
+    }
+
+    function sendMessageToSubscribers() {
+      const messageEl = document.getElementById('broadcast-message');
+      const text = messageEl.value.trim();
+      const subscribers = getSubscribers();
+
+      if (!text) {
+        alert('Please write a message first.');
+        return;
+      }
+
+      if (!subscribers.length) {
+        alert('No subscribers yet. Ask people to join first.');
+        return;
+      }
+
+      localStorage.setItem(STORAGE_KEYS.latestMessage, text);
+
+      const emails = subscribers.map((sub) => sub.email).filter(Boolean);
+      const subject = encodeURIComponent('New message from Walk With God');
+      const body = encodeURIComponent(text);
+      window.location.href = `mailto:?bcc=${encodeURIComponent(emails.join(','))}&subject=${subject}&body=${body}`;
+
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Walk With God', { body: text.slice(0, 120) });
+      }
+    }
+
     async function handleSubscribe() {
       const nameEl  = document.getElementById('sub-name');
       const emailEl = document.getElementById('sub-email');
       const instantEmailEl = document.getElementById('pref-instant-email');
       const browserPushEl = document.getElementById('pref-browser-push');
-      const webhookEl = document.getElementById('sub-webhook');
       const btn     = document.getElementById('btn-join');
       const errEl   = document.getElementById('error-msg');
 
       const name  = nameEl.value.trim();
       const email = emailEl.value.trim();
-      const webhookUrl = webhookEl.value.trim();
       const wantsInstantEmail = instantEmailEl.checked;
       const wantsBrowserPush = browserPushEl.checked;
 
@@ -457,12 +549,6 @@
 
       if (!email) {
         errEl.textContent = 'Please enter your email address.';
-        errEl.style.display = 'block';
-        return;
-      }
-
-      if (!webhookUrl || !webhookUrl.startsWith('https://')) {
-        errEl.textContent = 'Please paste a valid https:// subscription connection URL.';
         errEl.style.display = 'block';
         return;
       }
@@ -491,39 +577,41 @@
           browserPushEnabled = true;
         }
 
-        const res = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name,
-            email,
-            wantsInstantEmail,
-            wantsBrowserPush: browserPushEnabled,
-            pushPermission,
-            subscribedAt: new Date().toISOString()
-          })
-        });
+        const subscribers = getSubscribers();
+        const existingIndex = subscribers.findIndex((sub) => sub.email.toLowerCase() === email.toLowerCase());
+        const subscriberPayload = {
+          name,
+          email,
+          wantsInstantEmail,
+          wantsBrowserPush: browserPushEnabled,
+          pushPermission,
+          subscribedAt: new Date().toISOString()
+        };
 
-        if (res.ok || res.status === 200 || res.status === 201 || res.status === 204) {
-          document.getElementById('subscribe-form').style.display = 'none';
-          document.getElementById('success-msg').style.display = 'block';
-          document.getElementById('success-msg').innerHTML = `Thank you! God bless you 🙏<br/>
-            <small style="font-weight:400;font-size:.9rem;">You'll receive instant email updates${browserPushEnabled ? ' and browser push alerts' : ''}.</small>`;
+        if (existingIndex >= 0) {
+          subscribers[existingIndex] = { ...subscribers[existingIndex], ...subscriberPayload };
         } else {
-          throw new Error('Server error ' + res.status);
+          subscribers.push(subscriberPayload);
         }
+        saveSubscribers(subscribers);
+
+        const latestMessage = localStorage.getItem(STORAGE_KEYS.latestMessage);
+        document.getElementById('subscribe-form').style.display = 'none';
+        document.getElementById('success-msg').style.display = 'block';
+        document.getElementById('success-msg').innerHTML = `Thank you! God bless you 🙏<br/>
+          <small style="font-weight:400;font-size:.9rem;">You're subscribed for instant updates${browserPushEnabled ? ' and browser push alerts' : ''}.${latestMessage ? ' Latest message is ready to be sent to you.' : ''}</small>`;
       } catch (e) {
-        const isFetchFailure = String(e?.message || '').toLowerCase().includes('failed to fetch');
-        errEl.textContent = isFetchFailure
-          ? 'Connection failed. Check your subscription URL box and make sure that endpoint accepts browser requests (CORS).'
-          : (e?.message || 'Something went wrong. Please try again later.');
+        errEl.textContent = e?.message || 'Something went wrong. Please try again later.';
         errEl.style.display = 'block';
         btn.disabled = false;
         btn.textContent = 'Join Us ✝';
       }
     }
+
+    updateSubscriberCount();
   </script>
 </body>
 </html>
+
 
 
