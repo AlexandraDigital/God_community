@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanctuary</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #faf7f2;
+    color: #3d2e1e;
+    min-height: 100vh;
+  }
+
+  /* TOP NAV */
+  header {
+    background: #fff;
+    border-bottom: 1px solid #e8e0d0;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: #5a3e28;
+    margin-right: 16px;
+    white-space: nowrap;
+  }
+
+  nav a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #9a8070;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  nav a:hover { color: #c4793a; }
+  nav a.active { color: #c4793a; border-bottom-color: #c4793a; }
+
+  /* LAYOUT */
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* HERO */
+  .hero { margin-bottom: 48px; }
+  .hero h1 {
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: #5a3e28;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .hero h1 em { font-style: italic; color: #c4793a; }
+  .hero p {
+    font-size: 1rem;
+    color: #7a6450;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .btn {
+    display: inline-block;
+    background: #c4793a;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.18s;
+    margin-right: 8px;
+  }
+  .btn:hover { background: #a05f28; }
+  .btn-ghost {
+    background: transparent;
+    color: #c4793a;
+    border: 1.5px solid #c4793a;
+  }
+  .btn-ghost:hover { background: #fdf0e4; }
+
+  /* VERSE */
+  .verse-card {
+    background: #fff;
+    border: 1px solid #e8e0d0;
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  .verse-card blockquote {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #5a3e28;
+    line-height: 1.75;
+    margin-bottom: 8px;
+  }
+  .verse-card cite {
+    font-size: 0.8rem;
+    color: #7a9e82;
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  /* SECTION */
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #b0967a;
+    margin-bottom: 16px;
+  }
+
+  /* POST CARDS */
+  .post {
+    background: #fff;
+    border: 1px solid #e8e0d0;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+    cursor: pointer;
+  }
+  .post:hover { border-color: #c4793a; }
+  .post-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #c4793a;
+    margin-bottom: 6px;
+  }
+  .post h3 {
+    font-family: 'Lora', serif;
+    font-size: 0.97rem;
+    font-weight: 500;
+    color: #5a3e28;
+    margin-bottom: 5px;
+  }
+  .post p {
+    font-style: italic;
+    font-size: 0.88rem;
+    color: #7a6450;
+    line-height: 1.6;
+  }
+  .post-meta {
+    font-size: 0.76rem;
+    color: #b0967a;
+    margin-top: 10px;
+  }
+
+  /* PRAYER */
+  .prayer-input {
+    background: #fff;
+    border: 1px solid #e8e0d0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .prayer-input textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #3d2e1e;
+    resize: none;
+    min-height: 70px;
+    line-height: 1.65;
+  }
+  .prayer-input textarea::placeholder { color: #c0aa90; }
+  .prayer-input-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f0e8d8;
+  }
+
+  .prayer-item {
+    background: #fff;
+    border: 1px solid #e8e0d0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .prayer-item:hover { border-color: #d4b090; }
+  .prayer-item p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: #3d2e1e;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+  .prayer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .prayer-meta { font-size: 0.76rem; color: #b0967a; }
+  .pray-btn {
+    background: #eef3ee;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: #7a9e82;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: background 0.15s;
+  }
+  .pray-btn:hover { background: #7a9e82; color: #fff; }
+
+  /* EVENTS */
+  .event-item {
+    background: #fff;
+    border: 1px solid #e8e0d0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    transition: border-color 0.15s;
+  }
+  .event-item:hover { border-color: #c4793a; }
+  .event-date {
+    text-align: center;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+  .event-date .mo { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #c4793a; }
+  .event-date .dy { font-family: 'Lora', serif; font-size: 1.5rem; color: #5a3e28; line-height: 1; }
+  .event-info { flex: 1; }
+  .event-name { font-weight: 600; font-size: 0.9rem; color: #3d2e1e; margin-bottom: 2px; }
+  .event-desc { font-size: 0.82rem; color: #7a6450; line-height: 1.5; }
+  .event-time { font-size: 0.76rem; color: #b0967a; margin-top: 4px; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(40px);
+    background: #5a3e28; color: #faf7f2;
+    font-size: 0.82rem; padding: 10px 22px;
+    border-radius: 30px; opacity: 0;
+    transition: all 0.28s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none; z-index: 99;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #e0d0bc; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🕊 Sanctuary</div>
+  <nav>
+    <a class="active" data-page="home" onclick="go(this)">Home</a>
+    <a data-page="prayer" onclick="go(this)">Prayer</a>
+    <a data-page="scripture" onclick="go(this)">Scripture</a>
+    <a data-page="events" onclick="go(this)">Gatherings</a>
+    <a data-page="community" onclick="go(this)">Community</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="hero">
+      <h1>A place to rest<br>and <em>belong</em></h1>
+      <p>You don't need to have it all together. This is a warm, open community for anyone seeking faith, hope, and connection.</p>
+      <button class="btn" onclick="go(document.querySelector('[data-page=prayer]'))">Share a prayer</button>
+      <button class="btn btn-ghost" onclick="go(document.querySelector('[data-page=events]'))">See gatherings</button>
+    </div>
+
+    <div class="verse-card">
+      <blockquote>"Come to me, all you who are weary and burdened, and I will give you rest."</blockquote>
+      <cite>Matthew 11:28 · Verse of the Day</cite>
+    </div>
+
+    <div class="section-label">Recent reflections</div>
+    <div class="post">
+      <div class="post-tag">Devotion</div>
+      <h3>Finding Peace in the Storm</h3>
+      <p>"He who spoke 'Peace, be still' still speaks to every tempest in your soul..."</p>
+      <div class="post-meta">Elder Grace · 2 hours ago</div>
+    </div>
+    <div class="post">
+      <div class="post-tag">Testimony</div>
+      <h3>How Psalm 23 Carried Me Through Loss</h3>
+      <p>"In the valley of grief, that ancient poem became bread for my spirit..."</p>
+      <div class="post-meta">Mary Ruth · 5 hours ago</div>
+    </div>
+    <div class="post">
+      <div class="post-tag">Study</div>
+      <h3>The Kingdom Parables — Week 3</h3>
+      <p>"The mustard seed asks us to rethink smallness. What grows quietly in your faith..."</p>
+      <div class="post-meta">Pastor Samuel · 1 day ago</div>
+    </div>
+  </div>
+
+  <!-- PRAYER -->
+  <div class="page" id="page-prayer">
+    <div class="hero">
+      <h1>The <em>Prayer</em> Wall</h1>
+      <p>Share your heart. We carry each other's burdens together.</p>
+    </div>
+
+    <div class="prayer-input">
+      <textarea id="prayerText" placeholder="Lord, I lift up…"></textarea>
+      <div class="prayer-input-footer">
+        <button class="btn" onclick="addPrayer()">Lift it up 🕊</button>
+      </div>
+    </div>
+
+    <div class="section-label">Community prayers</div>
+    <div id="prayerList">
+      <div class="prayer-item">
+        <p>"Please pray for my mother recovering from surgery. May God's healing hand bring peace to our family."</p>
+        <div class="prayer-row">
+          <span class="prayer-meta">James B. · 1h ago</span>
+          <button class="pray-btn" onclick="prayed(this)">🙏 Praying · 24</button>
+        </div>
+      </div>
+      <div class="prayer-item">
+        <p>"Seeking guidance through a hard decision. My heart is heavy. Praying for clarity and courage."</p>
+        <div class="prayer-row">
+          <span class="prayer-meta">Sister Lydia · 3h ago</span>
+          <button class="pray-btn" onclick="prayed(this)">🙏 Praying · 41</button>
+        </div>
+      </div>
+      <div class="prayer-item">
+        <p>"Grateful — my son found his way back to faith after years away. God is faithful 💛"</p>
+        <div class="prayer-row">
+          <span class="prayer-meta">Ruth H. · 6h ago</span>
+          <button class="pray-btn" onclick="prayed(this)">🙏 Praying · 89</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTURE -->
+  <div class="page" id="page-scripture">
+    <div class="hero">
+      <h1>This Week's <em>Passages</em></h1>
+      <p>A reading for each day — short enough to carry with you, deep enough to return to.</p>
+    </div>
+
+    <div class="post"><div class="post-tag">Monday</div><h3>Psalm 46:1–3</h3><p>"God is our refuge and strength, an ever-present help in trouble. Therefore we will not fear..."</p></div>
+    <div class="post"><div class="post-tag">Tuesday</div><h3>Romans 8:28</h3><p>"In all things God works for the good of those who love him, who have been called according to his purpose."</p></div>
+    <div class="post"><div class="post-tag">Wednesday</div><h3>Isaiah 40:31</h3><p>"Those who hope in the Lord will renew their strength. They will soar on wings like eagles..."</p></div>
+    <div class="post"><div class="post-tag">Thursday</div><h3>Philippians 4:6–7</h3><p>"Do not be anxious about anything, but in every situation present your requests to God with thanksgiving."</p></div>
+    <div class="post"><div class="post-tag">Friday</div><h3>Proverbs 3:5–6</h3><p>"Trust in the Lord with all your heart and lean not on your own understanding."</p></div>
+    <div class="post"><div class="post-tag">Weekend</div><h3>John 15:12–13</h3><p>"Love each other as I have loved you. Greater love has no one than this."</p></div>
+  </div>
+
+  <!-- EVENTS -->
+  <div class="page" id="page-events">
+    <div class="hero">
+      <h1>Upcoming <em>Gatherings</em></h1>
+      <p>Everyone is welcome. Come as you are, bring a friend.</p>
+    </div>
+
+    <div class="section-label">This month</div>
+    <div class="event-item">
+      <div class="event-date"><div class="mo">Apr</div><div class="dy">6</div></div>
+      <div class="event-info">
+        <div class="event-name">Palm Sunday Worship Service</div>
+        <div class="event-desc">Live worship & Communion to open Holy Week.</div>
+        <div class="event-time">10:00 AM · Main Sanctuary</div>
+      </div>
+      <button class="btn" onclick="toast('You\'re in! 🌿')">RSVP</button>
+    </div>
+    <div class="event-item">
+      <div class="event-date"><div class="mo">Apr</div><div class="dy">10</div></div>
+      <div class="event-info">
+        <div class="event-name">Maundy Thursday Prayer Vigil</div>
+        <div class="event-desc">Quiet prayer and scripture. Stay as long as you need.</div>
+        <div class="event-time">7:00 PM · Chapel Hall</div>
+      </div>
+      <button class="btn btn-ghost" onclick="toast('You\'re in! 🌿')">RSVP</button>
+    </div>
+    <div class="event-item">
+      <div class="event-date"><div class="mo">Apr</div><div class="dy">13</div></div>
+      <div class="event-info">
+        <div class="event-name">Easter Sunrise Service</div>
+        <div class="event-desc">Outdoors at dawn. Bring a blanket. Coffee provided!</div>
+        <div class="event-time">6:00 AM · Hilltop Garden</div>
+      </div>
+      <button class="btn" onclick="toast('You\'re in! 🌿')">RSVP</button>
+    </div>
+    <div class="event-item">
+      <div class="event-date"><div class="mo">Apr</div><div class="dy">19</div></div>
+      <div class="event-info">
+        <div class="event-name">Women's Bible Study — Esther</div>
+        <div class="event-desc">Week 4. New faces always warmly welcomed. Tea & snacks.</div>
+        <div class="event-time">6:30 PM · Fellowship Room 3</div>
+      </div>
+      <button class="btn btn-ghost" onclick="toast('You\'re in! 🌿')">RSVP</button>
+    </div>
+  </div>
+
+  <!-- COMMUNITY -->
+  <div class="page" id="page-community">
+    <div class="hero">
+      <h1>Our <em>People</em></h1>
+      <p>Real stories from real people. This is what community looks like.</p>
+    </div>
+
+    <div class="section-label">Stories</div>
+    <div class="post">
+      <div class="post-tag">Testimony</div>
+      <h3>From Darkness Into Light</h3>
+      <p>"Three years ago I found this community in despair. Today I serve on the worship team and my life is completely changed."</p>
+      <div class="post-meta">Thomas C.</div>
+    </div>
+    <div class="post">
+      <div class="post-tag">Welcome</div>
+      <h3>New Family — The Oseis</h3>
+      <p>"We moved across the world and feared we'd be alone. Finding Sanctuary was God's first gift in our new home."</p>
+      <div class="post-meta">Abena Osei</div>
+    </div>
+    <div class="post">
+      <div class="post-tag">Ministry</div>
+      <h3>Food Pantry Reaches 200 Families</h3>
+      <p>"Every bag packed is a prayer answered and love made tangible."</p>
+      <div class="post-meta">Coordinator Wendy</div>
+    </div>
+
+    <div class="section-label" style="margin-top:32px">Serve with us</div>
+    <div class="post" onclick="toast('Thanks! We\'ll reach out soon 💛')"><div class="post-tag">Open</div><h3>Worship Team Vocalist</h3><p>All voices, all backgrounds are genuinely welcome.</p></div>
+    <div class="post" onclick="toast('Thanks! We\'ll reach out soon 💛')"><div class="post-tag">Open</div><h3>Youth Group Mentor</h3><p>Just a willing heart and a listening ear — that's all you need.</p></div>
+    <div class="post" onclick="toast('Thanks! We\'ll reach out soon 💛')"><div class="post-tag">Open</div><h3>Food Pantry Volunteer</h3><p>Saturday mornings. Be the hands and feet of love.</p></div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+function go(el) {
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = el.dataset.page;
+  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  document.getElementById('page-' + page)?.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function addPrayer() {
+  const ta = document.getElementById('prayerText');
+  const text = ta.value.trim();
+  if (!text) { toast('Write something first 🌿'); return; }
+  const div = document.createElement('div');
+  div.className = 'prayer-item';
+  div.innerHTML = `<p>"${text}"</p>
+    <div class="prayer-row">
+      <span class="prayer-meta">You · just now</span>
+      <button class="pray-btn" onclick="prayed(this)">🙏 Praying · 0</button>
+    </div>`;
+  document.getElementById('prayerList').prepend(div);
+  ta.value = '';
+  toast('Your prayer has been lifted up 🕊');
+}
+
+function prayed(btn) {
+  const m = btn.textContent.match(/·\s*(\d+)/);
+  if (m) btn.textContent = `🙏 Praying · ${+m[1]+1}`;
+  btn.style.background = '#7a9e82';
+  btn.style.color = '#fff';
+  toast('Joined in prayer 🙏');
+}
+
+let tt;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(tt);
+  tt = setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
