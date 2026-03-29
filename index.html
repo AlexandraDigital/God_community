@@ -234,6 +234,32 @@
       flex-direction: column;
       gap: 14px;
     }
+    .preference-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: -2px;
+    }
+    .preference-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: .95rem;
+      color: #44403c;
+      line-height: 1.5;
+    }
+    .preference-option input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 3px;
+      accent-color: var(--orange);
+      flex-shrink: 0;
+    }
+    .preference-note {
+      font-size: .82rem;
+      color: var(--text-muted);
+      margin-top: -2px;
+    }
     .form-group input {
       width: 100%;
       padding: 14px 18px;
@@ -342,12 +368,23 @@
     <!-- SUBSCRIBE -->
     <div class="subscribe-section">
       <h2>🕊 Join the Community</h2>
-      <p>Subscribe to receive Alexandra's messages of faith directly in your inbox. Walk with us in the Word of God.</p>
+      <p>Get Alexandra's updates the moment she posts. Choose instant email alerts, browser push notifications, or both.</p>
 
       <div id="subscribe-form">
         <div class="form-group">
           <input type="text" id="sub-name" placeholder="Your name" autocomplete="name" />
           <input type="email" id="sub-email" placeholder="Your email address" autocomplete="email" required />
+          <div class="preference-group">
+            <label class="preference-option">
+              <input type="checkbox" id="pref-instant-email" checked disabled />
+              <span><strong>Instant email alerts</strong><br/>Messages arrive right away (no morning digest wait).</span>
+            </label>
+            <label class="preference-option">
+              <input type="checkbox" id="pref-browser-push" />
+              <span><strong>Browser push notifications</strong><br/>Pop-up alerts on this phone/computer when something new is posted.</span>
+            </label>
+            <p class="preference-note">To receive browser push, allow notification permission when prompted.</p>
+          </div>
           <button class="btn-join" id="btn-join" onclick="handleSubscribe()">Join Us ✝</button>
         </div>
         <div class="error-msg" id="error-msg"></div>
@@ -388,11 +425,15 @@
     async function handleSubscribe() {
       const nameEl  = document.getElementById('sub-name');
       const emailEl = document.getElementById('sub-email');
+      const instantEmailEl = document.getElementById('pref-instant-email');
+      const browserPushEl = document.getElementById('pref-browser-push');
       const btn     = document.getElementById('btn-join');
       const errEl   = document.getElementById('error-msg');
 
       const name  = nameEl.value.trim();
       const email = emailEl.value.trim();
+      const wantsInstantEmail = instantEmailEl.checked;
+      const wantsBrowserPush = browserPushEl.checked;
 
       errEl.style.display = 'none';
 
@@ -406,20 +447,49 @@
       btn.textContent = 'Joining…';
 
       try {
+        let pushPermission = 'not_requested';
+        let browserPushEnabled = false;
+
+        if (wantsBrowserPush) {
+          if (!('Notification' in window)) {
+            throw new Error('Browser notifications are not supported on this device/browser.');
+          }
+
+          pushPermission = Notification.permission;
+          if (pushPermission !== 'granted') {
+            pushPermission = await Notification.requestPermission();
+          }
+
+          if (pushPermission !== 'granted') {
+            throw new Error('Notifications were blocked. Please allow notifications to enable browser push alerts.');
+          }
+
+          browserPushEnabled = true;
+        }
+
         const res = await fetch('https://hooks.tasklet.ai/whe_xd10av30qct959h8bca4', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email })
+          body: JSON.stringify({
+            name,
+            email,
+            wantsInstantEmail,
+            wantsBrowserPush: browserPushEnabled,
+            pushPermission,
+            subscribedAt: new Date().toISOString()
+          })
         });
 
         if (res.ok || res.status === 200 || res.status === 201 || res.status === 204) {
           document.getElementById('subscribe-form').style.display = 'none';
           document.getElementById('success-msg').style.display = 'block';
+          document.getElementById('success-msg').innerHTML = `Thank you! God bless you 🙏<br/>
+            <small style="font-weight:400;font-size:.9rem;">You'll receive instant email updates${browserPushEnabled ? ' and browser push alerts' : ''}.</small>`;
         } else {
           throw new Error('Server error ' + res.status);
         }
       } catch (e) {
-        errEl.textContent = 'Something went wrong. Please try again later.';
+        errEl.textContent = e?.message || 'Something went wrong. Please try again later.';
         errEl.style.display = 'block';
         btn.disabled = false;
         btn.textContent = 'Join Us ✝';
@@ -428,3 +498,4 @@
   </script>
 </body>
 </html>
+
