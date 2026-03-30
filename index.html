@@ -9,8 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
 
   <!-- Firebase Compat SDK (for cross-device sync) -->
-  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics-compat.js"></script>
   
   
 
@@ -650,10 +651,10 @@
 </header>
 
 <nav class="tab-nav">
-  <button class="tab-btn active" onclick="showPage('home', this)">🏠 Home</button>
-  <button class="tab-btn" onclick="showPage('messages', this)">📖 Messages</button>
-  <button class="tab-btn" onclick="showPage('prayers', this)">🙏 Prayer Wall</button>
-  <button class="tab-btn" onclick="showPage('subscribe', this)">✉️ Subscribe</button>
+  <button class="tab-btn active" onclick="showPage('home')">🏠 Home</button>
+  <button class="tab-btn" onclick="showPage('messages')">📖 Messages</button>
+  <button class="tab-btn" onclick="showPage('prayers')">🙏 Prayer Wall</button>
+  <button class="tab-btn" onclick="showPage('subscribe')">✉️ Subscribe</button>
 </nav>
 
 <main>
@@ -690,7 +691,7 @@
       </div>
       <button class="btn-primary" id="btn-generate" onclick="generateDevotional()" style="margin-bottom:16px">Generate Devotional ✝</button>
       <div class="ai-result" id="ai-result" style="display:none"></div>
-      <div style="margin-top:14px;gap:10px;flex-wrap:wrap;display:none" id="ai-share-bar"></div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap" id="ai-share-bar" style="display:none"></div>
     </div>
 
   </div>
@@ -824,7 +825,7 @@
 
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const FIREBASE_CONFIG = {
-     apiKey: process.env.FIREBASE_API_KEY,
+     apiKey: "PASTE_YOUR_FIREBASE_API_KEY_HERE",  // ← Replace this with your API key from Firebase Console → Project Settings
     authDomain: "godcommunity-2c3db.firebaseapp.com",
     databaseURL: "https://godcommunity-2c3db-default-rtdb.firebaseio.com",
     projectId: "godcommunity-2c3db",
@@ -900,11 +901,11 @@ function setupAutosave(inputId, draftKey, indicatorId) {
 // ════════════════════════════════════════
 // TABS
 // ════════════════════════════════════════
-function showPage(name, btn) {
+function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  if (btn) btn.classList.add('active');
+  event.currentTarget.classList.add('active');
 }
 
 // ════════════════════════════════════════
@@ -1123,7 +1124,6 @@ function renderMessages(msgsParam) {
         <div class="msg-share">
           <a class="share-btn whatsapp" href="https://wa.me/?text=${encoded}" target="_blank">💬 WhatsApp</a>
           <a class="share-btn twitter" href="https://twitter.com/intent/tweet?text=${encoded}" target="_blank">🐦 Twitter</a>
-          <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}&quote=${encoded}" target="_blank">📘 Facebook</a>
           <button class="share-btn instagram" onclick="shareToInstagram(${JSON.stringify(shareText)})">📸 Instagram</button>
           <button class="share-btn copy" onclick="copyText(${JSON.stringify(shareText)})">📋 Copy</button>
         </div>
