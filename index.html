@@ -12,6 +12,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   
+  
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -831,6 +832,8 @@ const FIREBASE_CONFIG = {
     messagingSenderId: "624333370481",
     appId: "1:624333370481:web:e0b18bdc017568a60397d0",
     measurementId: "G-WQSM8FE71N"
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 };
 
 const USE_FIREBASE = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL);
