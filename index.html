@@ -189,6 +189,19 @@
     .share-btn.facebook { border-color: #1877f2; color: #1557b0; background: #eff6ff; }
     .share-btn.facebook:hover { background: #1877f2; color: white; }
     .share-btn.copy { border-color: var(--orange-border); color: var(--orange-dark); background: var(--orange-pale); }
+    .share-btn.instagram { border-color: #c13584; color: #833ab4; background: #fdf4ff; }
+    .share-btn.instagram:hover { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: white; border-color: transparent; }
+
+    /* ── DRAFT INDICATOR ── */
+    .draft-indicator {
+      font-size: .78rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .draft-indicator.visible { opacity: 1; }
+
     .share-btn.copy:hover { background: var(--orange); color: white; border-color: var(--orange); }
 
     /* ── AI DEVOTIONAL ── */
@@ -673,6 +686,7 @@
         <textarea id="msg-body" placeholder="Share a word, testimony, or encouragement..." rows="4"></textarea>
         <input type="text" id="msg-verse" placeholder="Include a Bible verse (e.g. John 3:16)" />
         <button class="btn-primary" onclick="postMessage()">Post Message ✝</button>
+        <div class="draft-indicator" id="msg-draft-indicator">✓ Draft saved</div>
       </div>
     </div>
 
@@ -704,6 +718,7 @@
         </select>
         <textarea id="prayer-text" placeholder="Share your prayer request..." rows="3"></textarea>
         <button class="btn-primary" onclick="submitPrayer()">Submit Prayer Request 🙏</button>
+        <div class="draft-indicator" id="prayer-draft-indicator">✓ Draft saved</div>
       </div>
     </div>
 
@@ -751,6 +766,7 @@
       <div class="form-row">
         <textarea id="broadcast-msg" placeholder="Write your broadcast message here..." rows="4"></textarea>
         <button class="btn-primary" onclick="sendBroadcast()">📨 Open Email to Send</button>
+        <div class="draft-indicator" id="broadcast-draft-indicator">✓ Draft saved</div>
         <p class="helper-note">This opens your default email app with all subscribers in BCC. No third-party service needed.</p>
       </div>
     </div>
@@ -767,6 +783,46 @@
 <div class="toast" id="toast"></div>
 
 <script>
+
+// ════════════════════════════════════════
+// AUTOSAVE DRAFT KEYS
+// ════════════════════════════════════════
+const DRAFT_KEYS = {
+  msgAuthor:  'wwg_draft_msg_author',
+  msgTitle:   'wwg_draft_msg_title',
+  msgBody:    'wwg_draft_msg_body',
+  msgVerse:   'wwg_draft_msg_verse',
+  broadcast:  'wwg_draft_broadcast',
+  prayerName: 'wwg_draft_prayer_name',
+  prayerText: 'wwg_draft_prayer_text',
+};
+
+function saveDraft(key, value) {
+  try { localStorage.setItem(key, value); } catch(e) {}
+}
+function loadDraft(key) {
+  try { return localStorage.getItem(key) || ''; } catch(e) { return ''; }
+}
+function clearDraft(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+}
+function showDraftSaved(indicatorId) {
+  const el = document.getElementById(indicatorId);
+  if (!el) return;
+  el.classList.add('visible');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('visible'), 2000);
+}
+function setupAutosave(inputId, draftKey, indicatorId) {
+  const el = document.getElementById(inputId);
+  if (!el) return;
+  el.value = loadDraft(draftKey);
+  el.addEventListener('input', () => {
+    saveDraft(draftKey, el.value);
+    if (indicatorId) showDraftSaved(indicatorId);
+  });
+}
+
 // ════════════════════════════════════════
 // TABS
 // ════════════════════════════════════════
@@ -803,6 +859,17 @@ const todayVerse = verses[new Date().getDay()];
 document.getElementById('daily-verse-text').textContent = '\u201c' + todayVerse.text + '\u201d';
 document.getElementById('daily-verse-ref').textContent = '\u2014 ' + todayVerse.ref;
 renderShareBar('verse-share-bar', '"' + todayVerse.text + '" — ' + todayVerse.ref);
+
+
+// ════════════════════════════════════════
+// INSTAGRAM SHARE (copy + open Instagram)
+// ════════════════════════════════════════
+function shareToInstagram(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('📋 Text copied! Opening Instagram…');
+    setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 700);
+  }).catch(() => showToast('Please copy your text manually, then paste to Instagram.'));
+}
 
 // ════════════════════════════════════════
 // SHARE BARS
@@ -916,7 +983,6 @@ Keep the tone warm, personal, and Spirit-filled. Do not use markdown headers or 
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
@@ -924,14 +990,12 @@ Keep the tone warm, personal, and Spirit-filled. Do not use markdown headers or 
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
         max_tokens: 500,
         messages: [{ role: 'user', content: prompt }]
       })
     });
     if (!response.ok) throw new Error('Anthropic request failed');
     const data = await response.json();
-    const text = data.content.map(b => b.text || '').join('');
     const text = (data.content || []).map(b => b.text || '').join('').trim();
     if (!text) throw new Error('Empty response');
 
@@ -946,7 +1010,6 @@ Keep the tone warm, personal, and Spirit-filled. Do not use markdown headers or 
     }
   } catch (e) {
     resultEl.className = 'ai-result';
-    resultEl.textContent = 'Could not generate devotional. Please check your connection and try again.';
     resultEl.textContent = fallbackText;
     shareBarEl.style.display = 'flex';
     renderShareBar('ai-share-bar', fallbackText, selectedTopic + ' — A Devotional');
@@ -1012,6 +1075,8 @@ function postMessage() {
   document.getElementById('msg-title').value = '';
   document.getElementById('msg-body').value = '';
   document.getElementById('msg-verse').value = '';
+  clearDraft(DRAFT_KEYS.msgAuthor); clearDraft(DRAFT_KEYS.msgTitle);
+  clearDraft(DRAFT_KEYS.msgBody); clearDraft(DRAFT_KEYS.msgVerse);
   renderMessages();
   showToast('Message posted! God bless you 🙏');
 
@@ -1078,6 +1143,7 @@ function submitPrayer() {
   savePrayers(prayers);
   document.getElementById('prayer-name').value = '';
   document.getElementById('prayer-text').value = '';
+  clearDraft(DRAFT_KEYS.prayerName); clearDraft(DRAFT_KEYS.prayerText);
   renderPrayers();
   showToast('Prayer submitted. The community is with you 🙏');
 }
@@ -1167,9 +1233,16 @@ renderMessages();
 renderPrayers();
 renderNotifStatus();
 renderSubList();
+
+// Wire up autosave
+setupAutosave('msg-author',    DRAFT_KEYS.msgAuthor,  'msg-draft-indicator');
+setupAutosave('msg-title',     DRAFT_KEYS.msgTitle,   'msg-draft-indicator');
+setupAutosave('msg-body',      DRAFT_KEYS.msgBody,    'msg-draft-indicator');
+setupAutosave('msg-verse',     DRAFT_KEYS.msgVerse,   'msg-draft-indicator');
+setupAutosave('broadcast-msg', DRAFT_KEYS.broadcast,  'broadcast-draft-indicator');
+setupAutosave('prayer-name',   DRAFT_KEYS.prayerName, 'prayer-draft-indicator');
+setupAutosave('prayer-text',   DRAFT_KEYS.prayerText, 'prayer-draft-indicator');
 </script>
 </body>
 </html>
-
-
 
