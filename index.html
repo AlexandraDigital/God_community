@@ -650,10 +650,10 @@
 </header>
 
 <nav class="tab-nav">
-  <button class="tab-btn active" onclick="showPage('home')">🏠 Home</button>
-  <button class="tab-btn" onclick="showPage('messages')">📖 Messages</button>
-  <button class="tab-btn" onclick="showPage('prayers')">🙏 Prayer Wall</button>
-  <button class="tab-btn" onclick="showPage('subscribe')">✉️ Subscribe</button>
+  <button class="tab-btn active" onclick="showPage('home', this)">🏠 Home</button>
+  <button class="tab-btn" onclick="showPage('messages', this)">📖 Messages</button>
+  <button class="tab-btn" onclick="showPage('prayers', this)">🙏 Prayer Wall</button>
+  <button class="tab-btn" onclick="showPage('subscribe', this)">✉️ Subscribe</button>
 </nav>
 
 <main>
@@ -690,7 +690,7 @@
       </div>
       <button class="btn-primary" id="btn-generate" onclick="generateDevotional()" style="margin-bottom:16px">Generate Devotional ✝</button>
       <div class="ai-result" id="ai-result" style="display:none"></div>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap" id="ai-share-bar" style="display:none"></div>
+      <div style="margin-top:14px;gap:10px;flex-wrap:wrap;display:none" id="ai-share-bar"></div>
     </div>
 
   </div>
@@ -900,11 +900,11 @@ function setupAutosave(inputId, draftKey, indicatorId) {
 // ════════════════════════════════════════
 // TABS
 // ════════════════════════════════════════
-function showPage(name) {
+function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  event.currentTarget.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 // ════════════════════════════════════════
@@ -1123,6 +1123,7 @@ function renderMessages(msgsParam) {
         <div class="msg-share">
           <a class="share-btn whatsapp" href="https://wa.me/?text=${encoded}" target="_blank">💬 WhatsApp</a>
           <a class="share-btn twitter" href="https://twitter.com/intent/tweet?text=${encoded}" target="_blank">🐦 Twitter</a>
+          <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}&quote=${encoded}" target="_blank">📘 Facebook</a>
           <button class="share-btn instagram" onclick="shareToInstagram(${JSON.stringify(shareText)})">📸 Instagram</button>
           <button class="share-btn copy" onclick="copyText(${JSON.stringify(shareText)})">📋 Copy</button>
         </div>
