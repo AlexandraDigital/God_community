@@ -7,6 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Firebase Compat SDK (for cross-device sync) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -203,6 +208,20 @@
     .draft-indicator.visible { opacity: 1; }
 
     .share-btn.copy:hover { background: var(--orange); color: white; border-color: var(--orange); }
+
+    /* ── SYNC BANNER ── */
+    .sync-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: .83rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .sync-banner.live   { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .sync-banner.local  { background: var(--orange-pale); color: var(--orange-dark); border: 1px solid var(--orange-border); }
 
     /* ── AI DEVOTIONAL ── */
     .ai-box {
@@ -691,6 +710,7 @@
     </div>
 
     <h2 class="section-title">📖 Community Messages</h2>
+    <div id="messages-sync-banner"></div>
     <div class="messages-list" id="messages-list">
       <div class="empty-state">
         <span>🙏</span>
@@ -723,6 +743,7 @@
     </div>
 
     <h2 class="section-title">🙏 Prayer Requests</h2>
+    <div id="prayers-sync-banner"></div>
     <div class="prayer-cards" id="prayer-cards">
       <div class="empty-state">
         <span>✝</span>
@@ -784,8 +805,54 @@
 
 <script>
 
+// ════════════════════════════════════════════════════════════
+// FIREBASE CONFIGURATION — Cross-Device Sync
+// ════════════════════════════════════════════════════════════
+// To enable messages & prayers to sync across ALL devices:
+//
+// 1. Go to https://console.firebase.google.com/
+// 2. Click "Add project" → give it a name → Continue
+// 3. Go to Build → Realtime Database → "Create database"
+//    → Choose a region → Start in TEST MODE → Enable
+// 4. Go to Project Settings (⚙ gear icon) → "Your apps"
+//    → Click </> (Web) → Register app → copy the config below
+// 5. Paste your values into the fields below and re-upload
+// ════════════════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey:            "",   // ← paste your apiKey
+  authDomain:        "",   // ← paste your authDomain
+  databaseURL:       "",   // ← paste your databaseURL (ends in .firebaseio.com)
+  projectId:         "",   // ← paste your projectId
+  storageBucket:     "",   // ← paste your storageBucket
+  messagingSenderId: "",   // ← paste your messagingSenderId
+  appId:             ""    // ← paste your appId
+};
+
+const USE_FIREBASE = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL);
+let firebaseDb = null;
+
+if (USE_FIREBASE) {
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    firebaseDb = firebase.database();
+  } catch(e) {
+    console.warn('Firebase init failed:', e);
+  }
+}
+
+function showSyncBanner(containerId, isLive) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (isLive) {
+    el.innerHTML = `<div class="sync-banner live">🌐 Live sync enabled — messages update across all devices in real time</div>`;
+  } else {
+    el.innerHTML = `<div class="sync-banner local">📱 Saved on this device only — add Firebase config to sync across devices</div>`;
+  }
+}
+
+
 // ════════════════════════════════════════
-// AUTOSAVE DRAFT KEYS
+// AUTOSAVE DRAFT KEYS  (always local — drafts are per-device)
 // ════════════════════════════════════════
 const DRAFT_KEYS = {
   msgAuthor:  'wwg_draft_msg_author',
@@ -882,6 +949,7 @@ function renderShareBar(containerId, text, title) {
     <a class="share-btn whatsapp" href="https://wa.me/?text=${encoded}" target="_blank">💬 WhatsApp</a>
     <a class="share-btn twitter" href="https://twitter.com/intent/tweet?text=${encoded}" target="_blank">🐦 Twitter/X</a>
     <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}&quote=${encoded}" target="_blank">📘 Facebook</a>
+    <button class="share-btn instagram" onclick="shareToInstagram(${JSON.stringify(text)})">📸 Instagram</button>
     <button class="share-btn copy" onclick="copyText(${JSON.stringify(text)})">📋 Copy</button>
   `;
 }
@@ -898,7 +966,7 @@ const devotionalFallbacks = {
   Faith: {
     verse: '"Now faith is confidence in what we hope for and assurance about what we do not see." — Hebrews 11:1',
     opening: 'Some days it feels easy to trust God, and other days we can barely see one step ahead. In those moments, faith is not pretending everything is perfect—it is choosing to lean on God anyway.',
-    reflection: 'Hebrews 11:1 reminds us that faith is confidence rooted in God’s character, not in our circumstances. Even when answers are delayed, the Lord is still working. Your quiet obedience, your prayers, and your hope matter more than you realize. What you place in God’s hands is never wasted.',
+    reflection: 'Hebrews 11:1 reminds us that faith is confidence rooted in God\'s character, not in our circumstances. Even when answers are delayed, the Lord is still working. Your quiet obedience, your prayers, and your hope matter more than you realize. What you place in God\'s hands is never wasted.',
     closing: 'Today, ask God for fresh faith in the places where you feel uncertain. He is faithful, and He will carry you forward.'
   },
   Hope: {
@@ -909,9 +977,9 @@ const devotionalFallbacks = {
   },
   Love: {
     verse: '"Above all, love each other deeply, because love covers over a multitude of sins." — 1 Peter 4:8',
-    opening: 'God’s love meets us at our best and our worst. The love He gives us is not shallow—it is patient, forgiving, and strong.',
-    reflection: '1 Peter 4:8 calls us to love deeply, and that kind of love is only possible through God’s grace. It chooses mercy over offense and compassion over pride. When we receive the love of Christ, we become people who can extend healing to others. Love does not ignore truth, but it always carries truth with kindness.',
-    closing: 'Ask the Lord to help you love like Jesus today. One act of grace can change someone’s entire day.'
+    opening: 'God\'s love meets us at our best and our worst. The love He gives us is not shallow—it is patient, forgiving, and strong.',
+    reflection: '1 Peter 4:8 calls us to love deeply, and that kind of love is only possible through God\'s grace. It chooses mercy over offense and compassion over pride. When we receive the love of Christ, we become people who can extend healing to others. Love does not ignore truth, but it always carries truth with kindness.',
+    closing: 'Ask the Lord to help you love like Jesus today. One act of grace can change someone\'s entire day.'
   },
   Healing: {
     verse: '"He heals the brokenhearted and binds up their wounds." — Psalm 147:3',
@@ -921,15 +989,15 @@ const devotionalFallbacks = {
   },
   Strength: {
     verse: '"My grace is sufficient for you, for my power is made perfect in weakness." — 2 Corinthians 12:9',
-    opening: 'You were never meant to carry everything by yourself. God’s strength shines most clearly in the places where we feel weak.',
+    opening: 'You were never meant to carry everything by yourself. God\'s strength shines most clearly in the places where we feel weak.',
     reflection: 'In 2 Corinthians 12:9, Paul learned that weakness is not failure—it is an invitation to depend on grace. God does not always remove the struggle immediately, but He supplies strength for each step. His power sustains you when your own strength runs low. What feels impossible to you is not beyond Him.',
     closing: 'Ask God for strength for today, not all at once. His grace will meet you in the very moment you need it.'
   },
   Forgiveness: {
     verse: '"Be kind and compassionate to one another, forgiving each other, just as in Christ God forgave you." — Ephesians 4:32',
     opening: 'Forgiveness can be one of the hardest acts of obedience. Yet God never asks us to give what He has not first given us.',
-    reflection: 'Ephesians 4:32 points us back to the cross, where we were fully forgiven in Christ. Forgiveness does not call evil good, but it releases the burden of revenge into God’s hands. As we forgive, our hearts make room for peace and healing. God’s mercy empowers us to move forward without bitterness.',
-    closing: 'If forgiveness feels impossible, start with a simple prayer: “Lord, help me.” He will lead you step by step.'
+    reflection: 'Ephesians 4:32 points us back to the cross, where we were fully forgiven in Christ. Forgiveness does not call evil good, but it releases the burden of revenge into God\'s hands. As we forgive, our hearts make room for peace and healing. God\'s mercy empowers us to move forward without bitterness.',
+    closing: 'If forgiveness feels impossible, start with a simple prayer: "Lord, help me." He will lead you step by step.'
   },
   Peace: {
     verse: '"You will keep in perfect peace those whose minds are steadfast, because they trust in you." — Isaiah 26:3',
@@ -965,14 +1033,7 @@ async function generateDevotional() {
   resultEl.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span> Writing your devotional…';
   shareBarEl.style.display = 'none';
 
-  const prompt = `Write a short, heartfelt Christian devotional on the theme of "${selectedTopic}". 
-Structure it as:
-1. A warm opening paragraph (2-3 sentences) connecting to real life
-2. A key Bible verse (quoted with reference)
-3. A brief reflection (3-4 sentences) unpacking the verse
-4. A closing encouragement or prayer (2-3 sentences)
-
-Keep the tone warm, personal, and Spirit-filled. Do not use markdown headers or bullet points — write it as flowing paragraphs. Keep it under 250 words total.`;
+  const prompt = `Write a short, heartfelt Christian devotional on the theme of "${selectedTopic}". \nStructure it as:\n1. A warm opening paragraph (2-3 sentences) connecting to real life\n2. A key Bible verse (quoted with reference)\n3. A brief reflection (3-4 sentences) unpacking the verse\n4. A closing encouragement or prayer (2-3 sentences)\n\nKeep the tone warm, personal, and Spirit-filled. Do not use markdown headers or bullet points — write it as flowing paragraphs. Keep it under 250 words total.`;
 
   const fallback = devotionalFallbacks[selectedTopic] || devotionalFallbacks.Faith;
   const fallbackText = `${fallback.opening}\n\n${fallback.verse}\n\n${fallback.reflection}\n\n${fallback.closing}`;
@@ -1004,7 +1065,6 @@ Keep the tone warm, personal, and Spirit-filled. Do not use markdown headers or 
     shareBarEl.style.display = 'flex';
     renderShareBar('ai-share-bar', text, selectedTopic + ' — A Devotional');
 
-    // Notify subscribers if notifications granted
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Walk With God — New Devotional', { body: text.slice(0, 120) + '…' });
     }
@@ -1025,19 +1085,19 @@ Keep the tone warm, personal, and Spirit-filled. Do not use markdown headers or 
 // ════════════════════════════════════════
 const MSGS_KEY = 'wwg_messages';
 
-function getMessages() {
+function getMessagesLocal() {
   try { return JSON.parse(localStorage.getItem(MSGS_KEY)) || []; } catch { return []; }
 }
-function saveMessages(msgs) { localStorage.setItem(MSGS_KEY, JSON.stringify(msgs)); }
+function saveMessagesLocal(msgs) { localStorage.setItem(MSGS_KEY, JSON.stringify(msgs)); }
 
-function renderMessages() {
-  const msgs = getMessages();
+function renderMessages(msgsParam) {
+  const msgs = msgsParam !== undefined ? msgsParam : getMessagesLocal().slice().reverse();
   const container = document.getElementById('messages-list');
   if (!msgs.length) {
     container.innerHTML = `<div class="empty-state"><span>🙏</span><p>No messages yet — be the first to share a word of encouragement!</p></div>`;
     return;
   }
-  container.innerHTML = msgs.slice().reverse().map(m => {
+  container.innerHTML = msgs.map(m => {
     const initial = (m.author || 'A')[0].toUpperCase();
     const shareText = (m.title ? m.title + '\n\n' : '') + m.body + (m.verse ? '\n\n' + m.verse : '');
     const encoded = encodeURIComponent(shareText);
@@ -1056,6 +1116,7 @@ function renderMessages() {
         <div class="msg-share">
           <a class="share-btn whatsapp" href="https://wa.me/?text=${encoded}" target="_blank">💬 WhatsApp</a>
           <a class="share-btn twitter" href="https://twitter.com/intent/tweet?text=${encoded}" target="_blank">🐦 Twitter</a>
+          <button class="share-btn instagram" onclick="shareToInstagram(${JSON.stringify(shareText)})">📸 Instagram</button>
           <button class="share-btn copy" onclick="copyText(${JSON.stringify(shareText)})">📋 Copy</button>
         </div>
       </div>`;
@@ -1068,19 +1129,31 @@ function postMessage() {
   const body   = document.getElementById('msg-body').value.trim();
   const verse  = document.getElementById('msg-verse').value.trim();
   if (!body) { showToast('Please write a message first.'); return; }
-  const msgs = getMessages();
-  msgs.push({ author: author || 'Anonymous', title, body, verse, date: new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) });
-  saveMessages(msgs);
+
+  const msgData = {
+    author: author || 'Anonymous',
+    title, body, verse,
+    date: new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }),
+    timestamp: Date.now()
+  };
+
+  if (USE_FIREBASE && firebaseDb) {
+    firebaseDb.ref('messages').push(msgData);
+  } else {
+    const msgs = getMessagesLocal();
+    msgs.push(msgData);
+    saveMessagesLocal(msgs);
+    renderMessages();
+  }
+
   document.getElementById('msg-author').value = '';
   document.getElementById('msg-title').value = '';
   document.getElementById('msg-body').value = '';
   document.getElementById('msg-verse').value = '';
   clearDraft(DRAFT_KEYS.msgAuthor); clearDraft(DRAFT_KEYS.msgTitle);
-  clearDraft(DRAFT_KEYS.msgBody); clearDraft(DRAFT_KEYS.msgVerse);
-  renderMessages();
+  clearDraft(DRAFT_KEYS.msgBody);   clearDraft(DRAFT_KEYS.msgVerse);
   showToast('Message posted! God bless you 🙏');
 
-  // Push notification to community
   if ('Notification' in window && Notification.permission === 'granted') {
     new Notification('Walk With God — New Message', { body: (title || body).slice(0, 100) });
   }
@@ -1091,22 +1164,27 @@ function postMessage() {
 // ════════════════════════════════════════
 const PRAYERS_KEY = 'wwg_prayers';
 
-function getPrayers() {
+function getPrayersLocal() {
   try { return JSON.parse(localStorage.getItem(PRAYERS_KEY)) || []; } catch { return []; }
 }
-function savePrayers(p) { localStorage.setItem(PRAYERS_KEY, JSON.stringify(p)); }
+function savePrayersLocal(p) { localStorage.setItem(PRAYERS_KEY, JSON.stringify(p)); }
 
 const catIcons = { healing:'🩺', guidance:'🧭', strength:'💪', family:'👨‍👩‍👧', gratitude:'🙌', other:'🌿' };
 
-function renderPrayers() {
-  const prayers = getPrayers();
+function renderPrayers(prayersParam) {
+  const isFirebase = prayersParam !== undefined;
+  const prayers = isFirebase ? prayersParam : getPrayersLocal().slice().reverse();
   const container = document.getElementById('prayer-cards');
   if (!prayers.length) {
     container.innerHTML = `<div class="empty-state"><span>✝</span><p>No prayer requests yet — submit one above and the community will pray with you.</p></div>`;
     return;
   }
-  container.innerHTML = prayers.slice().reverse().map((p, idx) => {
-    const realIdx = prayers.length - 1 - idx;
+  container.innerHTML = prayers.map((p, idx) => {
+    const localIdx = isFirebase ? null : getPrayersLocal().length - 1 - idx;
+    const firebaseKey = p.id || null;
+    const onClickArg = isFirebase
+      ? `togglePrayed(null, '${firebaseKey}')`
+      : `togglePrayed(${localIdx}, null)`;
     return `
       <div class="prayer-card">
         <div class="prayer-card-header">
@@ -1116,7 +1194,7 @@ function renderPrayers() {
         </div>
         <div class="prayer-text">${escHtml(p.text)}</div>
         <div class="prayer-actions">
-          <button class="pray-btn ${p.prayed ? 'prayed' : ''}" onclick="togglePrayed(${realIdx})">
+          <button class="pray-btn ${p.prayed ? 'prayed' : ''}" onclick="${onClickArg}">
             🙏 ${p.prayed ? 'Prayed!' : 'I prayed for this'}
           </button>
           <span class="pray-count">${p.prayCount || 0} praying</span>
@@ -1125,12 +1203,26 @@ function renderPrayers() {
   }).join('');
 }
 
-function togglePrayed(idx) {
-  const prayers = getPrayers();
-  if (!prayers[idx]) return;
-  if (!prayers[idx].prayed) { prayers[idx].prayed = true; prayers[idx].prayCount = (prayers[idx].prayCount || 0) + 1; }
-  savePrayers(prayers);
-  renderPrayers();
+function togglePrayed(localIdx, firebaseKey) {
+  if (USE_FIREBASE && firebaseDb && firebaseKey) {
+    const pRef = firebaseDb.ref('prayers/' + firebaseKey);
+    pRef.transaction(p => {
+      if (p && !p.prayed) {
+        p.prayed = true;
+        p.prayCount = (p.prayCount || 0) + 1;
+      }
+      return p;
+    });
+  } else {
+    const prayers = getPrayersLocal();
+    if (prayers[localIdx] === undefined) return;
+    if (!prayers[localIdx].prayed) {
+      prayers[localIdx].prayed = true;
+      prayers[localIdx].prayCount = (prayers[localIdx].prayCount || 0) + 1;
+    }
+    savePrayersLocal(prayers);
+    renderPrayers();
+  }
 }
 
 function submitPrayer() {
@@ -1138,13 +1230,29 @@ function submitPrayer() {
   const cat  = document.getElementById('prayer-category').value;
   const text = document.getElementById('prayer-text').value.trim();
   if (!text) { showToast('Please write your prayer request first.'); return; }
-  const prayers = getPrayers();
-  prayers.push({ name: name || 'Anonymous', category: cat, text, prayCount: 0, prayed: false, date: new Date().toISOString() });
-  savePrayers(prayers);
+
+  const prayerData = {
+    name: name || 'Anonymous',
+    category: cat,
+    text,
+    prayCount: 0,
+    prayed: false,
+    date: new Date().toISOString(),
+    timestamp: Date.now()
+  };
+
+  if (USE_FIREBASE && firebaseDb) {
+    firebaseDb.ref('prayers').push(prayerData);
+  } else {
+    const prayers = getPrayersLocal();
+    prayers.push(prayerData);
+    savePrayersLocal(prayers);
+    renderPrayers();
+  }
+
   document.getElementById('prayer-name').value = '';
   document.getElementById('prayer-text').value = '';
   clearDraft(DRAFT_KEYS.prayerName); clearDraft(DRAFT_KEYS.prayerText);
-  renderPrayers();
   showToast('Prayer submitted. The community is with you 🙏');
 }
 
@@ -1163,8 +1271,7 @@ function renderNotifStatus() {
   if (!('Notification' in window)) { bar.innerHTML = ''; return; }
   const perm = Notification.permission;
   const labels = { granted: '✅ Browser notifications are enabled', denied: '🚫 Browser notifications are blocked — please enable in browser settings', default: '🔔 Browser notifications not yet enabled' };
-  const cls = perm;
-  bar.innerHTML = `<div class="notif-status ${cls}">${labels[perm]}</div>`;
+  bar.innerHTML = `<div class="notif-status ${perm}">${labels[perm]}</div>`;
 }
 
 function renderSubList() {
@@ -1229,8 +1336,33 @@ function escHtml(str) {
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
-renderMessages();
-renderPrayers();
+if (USE_FIREBASE && firebaseDb) {
+  // Real-time listeners — data updates on ALL devices instantly
+  firebaseDb.ref('messages').orderByChild('timestamp').on('value', snapshot => {
+    const data = snapshot.val();
+    const msgs = data
+      ? Object.entries(data).map(([id, val]) => ({...val, id})).sort((a,b) => b.timestamp - a.timestamp)
+      : [];
+    renderMessages(msgs);
+  });
+
+  firebaseDb.ref('prayers').orderByChild('timestamp').on('value', snapshot => {
+    const data = snapshot.val();
+    const prayers = data
+      ? Object.entries(data).map(([id, val]) => ({...val, id})).sort((a,b) => b.timestamp - a.timestamp)
+      : [];
+    renderPrayers(prayers);
+  });
+
+  showSyncBanner('messages-sync-banner', true);
+  showSyncBanner('prayers-sync-banner', true);
+} else {
+  renderMessages();
+  renderPrayers();
+  showSyncBanner('messages-sync-banner', false);
+  showSyncBanner('prayers-sync-banner', false);
+}
+
 renderNotifStatus();
 renderSubList();
 
@@ -1245,4 +1377,3 @@ setupAutosave('prayer-text',   DRAFT_KEYS.prayerText, 'prayer-draft-indicator');
 </script>
 </body>
 </html>
-
