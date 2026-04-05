@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Walk With God · Alexandra's Community</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,233 +11,233 @@
     :root {
       --orange: #f97316;
       --orange-dark: #c4793a;
-      --orange-light: #fff7ed;
-      --orange-mid: #fed7aa;
+      --orange-light: #fdba74;
+      --orange-pale: #fff7ed;
+      --orange-pale2: #ffedd5;
       --white: #ffffff;
-      --text: #3b2207;
+      --text: #3b1f0a;
       --text-light: #78350f;
-      --gray: #f8f4ef;
-      --border: #fde8c8;
-      --shadow: 0 4px 24px rgba(201, 121, 58, 0.10);
+      --shadow: 0 4px 24px rgba(201,95,30,0.10);
     }
 
     body {
       font-family: 'Nunito', sans-serif;
-      background: var(--gray);
+      background: #fef9f5;
       color: var(--text);
       min-height: 100vh;
     }
 
+    /* HEADER */
     header {
-      background: linear-gradient(135deg, #ea580c 0%, #f97316 40%, #c4793a 100%);
-      color: var(--white);
+      background: linear-gradient(135deg, #c4793a 0%, #f97316 45%, #fb923c 70%, #fed7aa 100%);
+      padding: 3.5rem 1.5rem 4rem;
       text-align: center;
-      padding: 64px 24px 56px;
       position: relative;
       overflow: hidden;
     }
     header::before {
       content: '';
       position: absolute;
-      top: -60px; right: -60px;
-      width: 260px; height: 260px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 50%;
-    }
-    header::after {
-      content: '';
-      position: absolute;
-      bottom: -80px; left: -40px;
-      width: 200px; height: 200px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 50%;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(255,255,255,0.18) 0%, transparent 70%);
+      pointer-events: none;
     }
     .header-cross {
       font-size: 3rem;
-      margin-bottom: 12px;
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      margin-bottom: 0.5rem;
       display: block;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18));
     }
     header h1 {
       font-family: 'Lora', serif;
       font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 700;
-      letter-spacing: 0.02em;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.18);
-      margin-bottom: 12px;
+      color: #fff;
+      text-shadow: 0 2px 16px rgba(150,60,0,0.3);
+      letter-spacing: -0.5px;
+      margin-bottom: 0.6rem;
     }
     header p.subtitle {
+      font-family: 'Nunito', sans-serif;
       font-size: clamp(1rem, 2.5vw, 1.2rem);
-      font-weight: 300;
-      opacity: 0.92;
+      color: rgba(255,255,255,0.92);
+      font-weight: 400;
       max-width: 520px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
-    .container {
+    /* DAILY VERSE */
+    .daily-verse-section {
       max-width: 780px;
-      margin: 0 auto;
-      padding: 0 20px 60px;
-    }
-
-    .verse-section {
-      margin-top: -28px;
-      margin-bottom: 48px;
-    }
-    .verse-card {
-      background: linear-gradient(135deg, #fff7ed, #ffffff);
-      border: 1.5px solid var(--orange-mid);
-      border-radius: 18px;
-      padding: 32px 36px;
-      box-shadow: 0 8px 32px rgba(201,121,58,0.13);
-      text-align: center;
+      margin: -2rem auto 0;
+      padding: 0 1.5rem 2.5rem;
       position: relative;
+      z-index: 2;
     }
-    .verse-label {
-      font-size: 0.72rem;
+    .daily-verse-card {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border: 2px solid var(--orange-light);
+      border-radius: 18px;
+      padding: 2rem 2.2rem;
+      box-shadow: 0 8px 32px rgba(201,95,30,0.16), 0 2px 8px rgba(201,95,30,0.08);
+      text-align: center;
+    }
+    .daily-verse-label {
+      font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.15em;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--orange);
-      margin-bottom: 14px;
+      color: var(--orange-dark);
+      margin-bottom: 0.8rem;
+      opacity: 0.85;
     }
-    .verse-text {
+    .daily-verse-text {
       font-family: 'Lora', serif;
-      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
       font-style: italic;
       color: var(--text);
-      line-height: 1.75;
-      margin-bottom: 10px;
+      line-height: 1.65;
+      margin-bottom: 0.8rem;
     }
-    .verse-ref {
-      font-size: 0.85rem;
+    .daily-verse-ref {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--orange-dark);
     }
 
+    /* MAIN */
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
     .section-title {
       font-family: 'Lora', serif;
-      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      font-size: 1.7rem;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 24px;
+      margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.6rem;
     }
     .section-title::after {
       content: '';
       flex: 1;
       height: 2px;
-      background: linear-gradient(to right, var(--orange-mid), transparent);
+      background: linear-gradient(to right, var(--orange-light), transparent);
       border-radius: 2px;
     }
 
-    .messages-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      margin-bottom: 56px;
-    }
+    /* MESSAGE CARDS */
+    .messages-section { margin-bottom: 3rem; }
     .message-card {
       background: var(--white);
       border-radius: 16px;
-      padding: 28px 32px;
       box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--orange);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      border-left: 5px solid var(--orange);
+      padding: 1.6rem 1.8rem;
+      margin-bottom: 1.4rem;
+      transition: transform 0.18s, box-shadow 0.18s;
     }
     .message-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(201,121,58,0.16);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,95,30,0.16);
     }
     .message-date {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--orange);
-      margin-bottom: 10px;
+      margin-bottom: 0.5rem;
+      opacity: 0.85;
     }
     .message-title {
       font-family: 'Lora', serif;
-      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 14px;
-      line-height: 1.4;
+      margin-bottom: 0.8rem;
+      line-height: 1.3;
     }
     .message-body {
       font-size: 1rem;
-      line-height: 1.8;
-      color: #5c3a1e;
+      color: #5c3317;
+      line-height: 1.72;
       white-space: pre-line;
+      margin-bottom: 0.5rem;
     }
-    .message-verse-block {
-      margin-top: 18px;
-      background: var(--orange-light);
-      border-left: 3px solid var(--orange);
+    .message-verse {
+      margin-top: 1rem;
+      background: var(--orange-pale);
+      border-left: 4px solid var(--orange-light);
       border-radius: 0 10px 10px 0;
-      padding: 14px 18px;
+      padding: 0.8rem 1.1rem;
     }
-    .message-verse-block p {
+    .message-verse p {
       font-family: 'Lora', serif;
       font-style: italic;
-      font-size: 0.95rem;
-      line-height: 1.7;
+      font-size: 0.97rem;
       color: var(--text-light);
+      line-height: 1.6;
     }
 
-    .placeholder {
-      text-align: center;
-      padding: 56px 24px;
+    /* PLACEHOLDER */
+    .placeholder-card {
       background: var(--white);
-      border-radius: 18px;
-      border: 2px dashed var(--orange-mid);
-      margin-bottom: 56px;
-    }
-    .placeholder .icon { font-size: 3rem; margin-bottom: 16px; }
-    .placeholder p {
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: #a16207;
+      font-size: 1.05rem;
       font-family: 'Lora', serif;
-      font-size: 1.15rem;
-      color: var(--orange-dark);
       font-style: italic;
+      border: 2px dashed var(--orange-light);
+    }
+    .placeholder-card .placeholder-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+      display: block;
     }
 
+    /* SUBSCRIBE */
     .subscribe-section {
-      background: linear-gradient(135deg, #fff7ed, #fef3e2);
-      border: 1.5px solid var(--orange-mid);
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border: 2px solid var(--orange-light);
       border-radius: 20px;
-      padding: 40px 36px;
+      padding: 2.5rem 2rem;
       text-align: center;
-      box-shadow: var(--shadow);
+      box-shadow: 0 6px 24px rgba(201,95,30,0.10);
+      margin-bottom: 1rem;
     }
     .subscribe-section h2 {
       font-family: 'Lora', serif;
-      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      font-size: 1.6rem;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 10px;
+      margin-bottom: 0.5rem;
     }
     .subscribe-section p.sub-desc {
-      font-size: 0.98rem;
       color: var(--text-light);
-      margin-bottom: 28px;
-      line-height: 1.6;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
     }
     .subscribe-form {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      max-width: 400px;
+      gap: 0.9rem;
+      max-width: 420px;
       margin: 0 auto;
     }
     .subscribe-form input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 1.5px solid var(--orange-mid);
+      padding: 0.85rem 1.1rem;
+      border: 2px solid var(--orange-light);
       border-radius: 10px;
       font-family: 'Nunito', sans-serif;
       font-size: 1rem;
@@ -248,175 +246,129 @@
       outline: none;
       transition: border-color 0.2s;
     }
-    .subscribe-form input:focus {
-      border-color: var(--orange);
-      box-shadow: 0 0 0 3px rgba(249,115,22,0.12);
-    }
-    .subscribe-form input::placeholder { color: #d0a070; }
-    .btn-join {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #f97316, #c4793a);
-      color: var(--white);
-      border: none;
-      border-radius: 10px;
+    .subscribe-form input:focus { border-color: var(--orange); }
+    .subscribe-form input::placeholder { color: #c4a884; }
+    .subscribe-btn {
+      background: linear-gradient(135deg, var(--orange-dark), var(--orange));
+      color: #fff;
       font-family: 'Nunito', sans-serif;
       font-size: 1.05rem;
-      font-weight: 800;
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      transition: opacity 0.2s, transform 0.18s;
-      box-shadow: 0 4px 16px rgba(249,115,22,0.35);
-    }
-    .btn-join:hover { opacity: 0.93; transform: translateY(-2px); }
-    .btn-join:active { transform: translateY(0); }
-    .success-msg {
-      display: none;
-      background: #f0fdf4;
-      border: 1.5px solid #86efac;
-      border-radius: 10px;
-      padding: 16px;
-      color: #15803d;
       font-weight: 700;
-      font-size: 1.05rem;
-      margin-top: 8px;
-    }
-    .error-msg {
-      display: none;
-      background: #fff1f2;
-      border: 1.5px solid #fda4af;
+      padding: 0.9rem 1.5rem;
+      border: none;
       border-radius: 10px;
-      padding: 12px;
-      color: #be123c;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.5px;
+    }
+    .subscribe-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .subscribe-btn:active { transform: translateY(0); }
+    #subscribe-thanks {
+      display: none;
+      margin-top: 1rem;
+      color: var(--orange-dark);
+      font-family: 'Lora', serif;
+      font-size: 1.1rem;
+      font-style: italic;
       font-weight: 600;
-      font-size: 0.92rem;
-      margin-top: 8px;
     }
 
+    /* FOOTER */
     footer {
+      background: #3b1f0a;
+      color: rgba(255,255,255,0.65);
       text-align: center;
-      padding: 32px 20px;
-      color: #a07050;
-      font-size: 0.85rem;
-      border-top: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      font-size: 0.88rem;
     }
-    footer a { color: var(--orange); text-decoration: none; }
-    footer .cross { font-size: 1.4rem; display: block; margin-bottom: 6px; }
+    footer a { color: var(--orange-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
 
     @media (max-width: 600px) {
-      .message-card { padding: 22px 20px; }
-      .subscribe-section { padding: 30px 20px; }
-      .verse-card { padding: 26px 20px; }
+      header { padding: 2.5rem 1rem 3rem; }
+      .daily-verse-card { padding: 1.4rem 1.2rem; }
+      .message-card { padding: 1.2rem 1.2rem; }
+      .subscribe-section { padding: 1.8rem 1.2rem; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <span class="header-cross">✝</span>
+  <span class="header-cross">&#10013;</span>
   <h1>Walk With God</h1>
   <p class="subtitle">A community where we learn the Word of God together</p>
 </header>
 
-<div class="container">
-
-  <div class="verse-section">
-    <div class="verse-card">
-      <div class="verse-label">✦ Verse of the Day ✦</div>
-      <p class="verse-text" id="daily-verse-text"></p>
-      <p class="verse-ref" id="daily-verse-ref"></p>
-    </div>
+<section class="daily-verse-section">
+  <div class="daily-verse-card">
+    <div class="daily-verse-label">&#10024; Verse of the Day</div>
+    <div class="daily-verse-text" id="daily-verse-text"></div>
+    <div class="daily-verse-ref" id="daily-verse-ref"></div>
   </div>
+</section>
 
-  <h2 class="section-title">📖 Alexandra's Messages</h2>
+<main>
+  <section class="messages-section">
+    <h2 class="section-title">&#128214; Alexandra's Messages</h2>
+    <div class="placeholder-card">
+      <span class="placeholder-icon">&#128538;</span>
+      Messages coming soon &mdash; check back soon &#128591;
+    </div>
+  </section>
 
-  <div class="messages-grid" id="messages-container"></div>
-
-  <div class="subscribe-section">
-    <h2>🕊 Join the Community</h2>
-    <p class="sub-desc">Receive Alexandra's messages straight to your inbox and grow in faith together.</p>
-    <form class="subscribe-form" id="subscribe-form" onsubmit="handleSubscribe(event)">
+  <section class="subscribe-section">
+    <h2>Join the Community &#128591;</h2>
+    <p class="sub-desc">Receive Alexandra's messages and devotions directly in your inbox. Walk with us in faith.</p>
+    <form class="subscribe-form" id="subscribe-form">
       <input type="text" id="sub-name" placeholder="Your name" required />
       <input type="email" id="sub-email" placeholder="Your email address" required />
-      <button type="submit" class="btn-join" id="join-btn">Join Us ✝</button>
-      <div class="success-msg" id="success-msg">Thank you! God bless you 🙏</div>
-      <div class="error-msg" id="error-msg">Something went wrong. Please try again.</div>
+      <button type="submit" class="subscribe-btn">Join Us &#10013;</button>
     </form>
-  </div>
-
-</div>
+    <div id="subscribe-thanks">Thank you! God bless you &#128591;</div>
+  </section>
+</main>
 
 <footer>
-  <span class="cross">✝</span>
-  <p>Walk With God · Alexandra's Community · <a href="https://alexandradigital.github.io/God_community">alexandradigital.github.io/God_community</a></p>
-  <p style="margin-top:6px;">"For where two or three gather in my name, there am I with them." — Matthew 18:20</p>
+  <p>&copy; 2026 Walk With God &middot; Alexandra's Community &nbsp;|&nbsp; <a href="mailto:djroseli3@hotmail.com">Contact Alexandra</a></p>
 </footer>
 
 <script>
   const verses = [
-    { text: "The Lord is my shepherd; I shall not want.", ref: "Psalm 23:1" },
-    { text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", ref: "John 3:16" },
-    { text: "I can do all things through Christ who strengthens me.", ref: "Philippians 4:13" },
-    { text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.", ref: "Proverbs 3:5-6" },
-    { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9" },
-    { text: "Come to me, all you who are weary and burdened, and I will give you rest.", ref: "Matthew 11:28" },
-    { text: "The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning.", ref: "Lamentations 3:22-23" }
+    { text: 'The Lord is my shepherd; I shall not want.', ref: 'Psalm 23:1' },
+    { text: 'I can do all things through Christ who strengthens me.', ref: 'Philippians 4:13' },
+    { text: 'For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.', ref: 'John 3:16' },
+    { text: 'Trust in the Lord with all your heart, and do not lean on your own understanding.', ref: 'Proverbs 3:5' },
+    { text: 'Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.', ref: 'Joshua 1:9' },
+    { text: 'And we know that in all things God works for the good of those who love him, who have been called according to his purpose.', ref: 'Romans 8:28' },
+    { text: 'Come to me, all you who are weary and burdened, and I will give you rest.', ref: 'Matthew 11:28' }
   ];
+  const v = verses[new Date().getDay()];
+  document.getElementById('daily-verse-text').textContent = '\u201c' + v.text + '\u201d';
+  document.getElementById('daily-verse-ref').textContent = '\u2014 ' + v.ref;
 
-  const day = new Date().getDay();
-  document.getElementById('daily-verse-text').textContent = '"' + verses[day].text + '"';
-  document.getElementById('daily-verse-ref').textContent = '— ' + verses[day].ref;
-
-  const messages = [];
-
-  const container = document.getElementById('messages-container');
-
-  function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  }
-
-  if (messages.length === 0) {
-    container.innerHTML = '<div class="placeholder"><div class="icon">🙏</div><p>Messages coming soon — check back soon 🙏</p></div>';
-  } else {
-    messages.forEach(msg => {
-      const verseBlock = msg.verse ? '<div class="message-verse-block"><p>"' + msg.verse + '"</p></div>' : '';
-      container.innerHTML += '<div class="message-card"><div class="message-date">' + formatDate(msg.created_at) + '</div><h3 class="message-title">' + msg.title + '</h3><div class="message-body">' + msg.body + '</div>' + verseBlock + '</div>';
-    });
-  }
-
-  async function handleSubscribe(e) {
+  document.getElementById('subscribe-form').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const btn = document.getElementById('join-btn');
-    const successEl = document.getElementById('success-msg');
-    const errorEl = document.getElementById('error-msg');
-    successEl.style.display = 'none';
-    errorEl.style.display = 'none';
-
     const name = document.getElementById('sub-name').value.trim();
     const email = document.getElementById('sub-email').value.trim();
+    if (!name || !email) return;
+    const btn = this.querySelector('.subscribe-btn');
     btn.disabled = true;
-    btn.textContent = 'Sending... 🙏';
-
+    btn.textContent = 'Sending\u2026';
     try {
-      const res = await fetch('https://hooks.tasklet.ai/whe_xd10av30qct959h8bca4', {
+      await fetch('https://hooks.tasklet.ai/whe_xd10av30qct959h8bca4', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email })
       });
-      if (res.ok) {
-        successEl.style.display = 'block';
-        document.getElementById('subscribe-form').reset();
-      } else {
-        throw new Error('Non-OK response');
-      }
+      document.getElementById('subscribe-form').style.display = 'none';
+      document.getElementById('subscribe-thanks').style.display = 'block';
     } catch (err) {
-      errorEl.style.display = 'block';
-    } finally {
       btn.disabled = false;
-      btn.textContent = 'Join Us ✝';
+      btn.textContent = 'Join Us';
+      alert('Something went wrong. Please try again.');
     }
-  }
+  });
 </script>
 </body>
 </html>
