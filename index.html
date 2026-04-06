@@ -1,9 +1,16 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f97316" />
+  <meta name="description" content="Walk With God - Alexandra's Community where we learn the Word of God together" />
+  <meta property="og:title" content="Walk With God · Alexandra's Community" />
+  <meta property="og:description" content="A community where we learn the Word of God together" />
   <title>Walk With God · Alexandra's Community</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23f97316' width='192' height='192'/><text x='50%' y='50%' font-size='100' fill='white' text-anchor='middle' dominant-baseline='central'>✙</text></svg>" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23f97316' width='192' height='192'/><text x='50%' y='50%' font-size='100' fill='white' text-anchor='middle' dominant-baseline='central'>✙</text></svg>" />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,6 +49,19 @@
       background: radial-gradient(ellipse at 60% 40%, rgba(255,255,255,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
+    .header-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .header-text-group {
+      flex: 1;
+      min-width: 280px;
+    }
     .header-cross {
       font-size: 3rem;
       color: rgba(255,255,255,0.92);
@@ -66,6 +86,41 @@
       max-width: 520px;
       margin: 0 auto;
       line-height: 1.5;
+    }
+
+    /* INSTALL BUTTON */
+    #install-btn {
+      display: none;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.6);
+      padding: 0.7rem 1.2rem;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+      letter-spacing: 0.3px;
+    }
+    #install-btn:hover {
+      background: rgba(255,255,255,0.35);
+      border-color: rgba(255,255,255,0.8);
+      transform: translateY(-2px);
+    }
+    #install-btn:active {
+      transform: translateY(0);
+    }
+    #install-btn.show {
+      display: inline-block;
+    }
+    @media (max-width: 768px) {
+      #install-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+      }
     }
 
     /* DAILY VERSE */
@@ -286,6 +341,10 @@
 
     @media (max-width: 600px) {
       header { padding: 2.5rem 1rem 3rem; }
+      .header-content {
+        flex-direction: column;
+        gap: 1.2rem;
+      }
       .daily-verse-card { padding: 1.4rem 1.2rem; }
       .message-card { padding: 1.2rem 1.2rem; }
       .subscribe-section { padding: 1.8rem 1.2rem; }
@@ -295,14 +354,21 @@
 <body>
 
 <header>
-  <span class="header-cross">&#10013;</span>
-  <h1>Walk With God</h1>
-  <p class="subtitle">A community where we learn the Word of God together</p>
+  <div class="header-content">
+    <div class="header-text-group">
+      <span class="header-cross">✙</span>
+      <h1>Walk With God</h1>
+      <p class="subtitle">A community where we learn the Word of God together</p>
+    </div>
+    <button id="install-btn" title="Install this app on your device">
+      ⬇️ Install App
+    </button>
+  </div>
 </header>
 
 <section class="daily-verse-section">
   <div class="daily-verse-card">
-    <div class="daily-verse-label">&#10024; Verse of the Day</div>
+    <div class="daily-verse-label">✨ Verse of the Day</div>
     <div class="daily-verse-text" id="daily-verse-text"></div>
     <div class="daily-verse-ref" id="daily-verse-ref"></div>
   </div>
@@ -310,22 +376,22 @@
 
 <main>
   <section class="messages-section">
-    <h2 class="section-title">&#128214; Alexandra's Messages</h2>
+    <h2 class="section-title">📖 Alexandra's Messages</h2>
     <div class="placeholder-card">
-      <span class="placeholder-icon">&#128538;</span>
-      Messages coming soon &mdash; check back soon &#128591;
+      <span class="placeholder-icon">😊</span>
+      Messages coming soon &mdash; check back soon 🙏
     </div>
   </section>
 
   <section class="subscribe-section">
-    <h2>Join the Community &#128591;</h2>
+    <h2>Join the Community 🙏</h2>
     <p class="sub-desc">Receive Alexandra's messages and devotions directly in your inbox. Walk with us in faith.</p>
     <form class="subscribe-form" id="subscribe-form">
       <input type="text" id="sub-name" placeholder="Your name" required />
       <input type="email" id="sub-email" placeholder="Your email address" required />
-      <button type="submit" class="subscribe-btn">Join Us &#10013;</button>
+      <button type="submit" class="subscribe-btn">Join Us ✙</button>
     </form>
-    <div id="subscribe-thanks">Thank you! God bless you &#128591;</div>
+    <div id="subscribe-thanks">Thank you! God bless you 🙏</div>
   </section>
 </main>
 
@@ -334,6 +400,7 @@
 </footer>
 
 <script>
+  // Daily Verse Logic
   const verses = [
     { text: 'The Lord is my shepherd; I shall not want.', ref: 'Psalm 23:1' },
     { text: 'I can do all things through Christ who strengthens me.', ref: 'Philippians 4:13' },
@@ -347,6 +414,7 @@
   document.getElementById('daily-verse-text').textContent = '\u201c' + v.text + '\u201d';
   document.getElementById('daily-verse-ref').textContent = '\u2014 ' + v.ref;
 
+  // Subscribe Form Logic
   document.getElementById('subscribe-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const name = document.getElementById('sub-name').value.trim();
@@ -369,6 +437,39 @@
       alert('Something went wrong. Please try again.');
     }
   });
+
+  // PWA Install Logic
+  let deferredPrompt;
+  const installBtn = document.getElementById('install-btn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.classList.add('show');
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+      installBtn.classList.remove('show');
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    deferredPrompt = null;
+    installBtn.classList.remove('show');
+  });
+
+  // Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(err => {
+      console.log('Service Worker registration failed:', err);
+    });
+  }
 </script>
 </body>
 </html>
