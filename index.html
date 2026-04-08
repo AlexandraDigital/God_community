@@ -6,359 +6,353 @@
   <title>Walk With God · Alexandra's Community</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --orange:      #f97316;
-      --orange-dark: #c4793a;
-      --orange-light:#fff7ed;
-      --orange-mid:  #fed7aa;
-      --white:       #ffffff;
-      --text:        #3b1a05;
-      --muted:       #92400e;
-      --shadow:      rgba(249,115,22,.15);
-    }
-
     body {
       font-family: 'Nunito', sans-serif;
-      background: #fdf8f4;
-      color: var(--text);
-      line-height: 1.7;
+      background: #fdf8f3;
+      color: #3d2b1f;
+      min-height: 100vh;
     }
 
     /* ── HEADER ── */
     header {
-      background: linear-gradient(135deg, #f97316 0%, #c4793a 50%, #9a3412 100%);
+      background: linear-gradient(135deg, #f97316 0%, #c4793a 50%, #a85c28 100%);
       color: #fff;
       text-align: center;
-      padding: 70px 20px 60px;
+      padding: 60px 20px 50px;
       position: relative;
       overflow: hidden;
     }
     header::before {
       content: '';
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
-    .cross {
-      font-size: 3.5rem;
+    .header-cross {
+      font-size: 3rem;
+      margin-bottom: 12px;
       display: block;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 12px rgba(0,0,0,.3);
-      animation: float 4s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50%      { transform: translateY(-8px); }
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
     }
     header h1 {
       font-family: 'Lora', serif;
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 700;
-      letter-spacing: .5px;
-      text-shadow: 0 2px 8px rgba(0,0,0,.25);
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     header p {
-      margin-top: 12px;
-      font-size: 1.1rem;
+      margin-top: 14px;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
       font-weight: 300;
-      opacity: .92;
+      opacity: 0.92;
       max-width: 540px;
-      margin-inline: auto;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
     }
 
-    /* ── LAYOUT ── */
-    main { max-width: 780px; margin: 0 auto; padding: 40px 20px 60px; }
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 16px 60px;
+    }
 
-    section { margin-bottom: 56px; }
-    h2.section-title {
+    /* ── SECTION TITLE ── */
+    .section-title {
       font-family: 'Lora', serif;
-      font-size: 1.6rem;
-      color: var(--orange-dark);
-      border-left: 5px solid var(--orange);
-      padding-left: 14px;
-      margin-bottom: 24px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #c4793a;
+      margin: 48px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, #f9731640, transparent);
+      border-radius: 2px;
     }
 
     /* ── DAILY VERSE CARD ── */
-    .verse-of-day {
+    .verse-card {
       background: linear-gradient(135deg, #fff7ed, #ffedd5);
-      border: 1px solid var(--orange-mid);
-      border-left: 6px solid var(--orange);
+      border: 2px solid #fed7aa;
       border-radius: 16px;
-      padding: 28px 28px 24px;
-      box-shadow: 0 4px 20px var(--shadow);
-      text-align: center;
+      padding: 28px 32px;
+      margin-top: 36px;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(249,115,22,0.1);
     }
-    .verse-of-day .label {
-      font-size: .78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--orange-dark);
-      margin-bottom: 14px;
-    }
-    .verse-of-day blockquote {
+    .verse-card::before {
+      content: '\201C';
       font-family: 'Lora', serif;
-      font-size: 1.18rem;
-      font-style: italic;
-      color: var(--text);
-      line-height: 1.8;
+      font-size: 7rem;
+      color: #f9731620;
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      line-height: 1;
     }
-    .verse-of-day cite {
-      display: block;
+    .verse-card .verse-text {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      line-height: 1.8;
+      color: #7c3a10;
+      position: relative;
+    }
+    .verse-card .verse-ref {
       margin-top: 12px;
-      font-family: 'Nunito', sans-serif;
-      font-style: normal;
       font-weight: 700;
-      font-size: .9rem;
-      color: var(--orange-dark);
+      color: #c4793a;
+      font-size: 0.95rem;
+      text-align: right;
     }
 
     /* ── MESSAGE CARDS ── */
+    .messages-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
     .message-card {
       background: #fff;
       border-radius: 16px;
       padding: 28px 30px;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 16px var(--shadow);
-      border-top: 4px solid var(--orange);
-      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 2px 16px rgba(196,121,58,0.08);
+      border-left: 5px solid #f97316;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .message-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 28px var(--shadow);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(196,121,58,0.15);
+    }
+    .message-card .msg-date {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #c4793a;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
     }
     .message-card h3 {
       font-family: 'Lora', serif;
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: var(--orange-dark);
-      margin-bottom: 12px;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 700;
+      color: #3d2b1f;
+      margin-bottom: 14px;
+      line-height: 1.4;
     }
-    .message-card .body-text {
+    .message-card .msg-body {
       font-size: 1rem;
-      color: #4a2c0a;
-      white-space: pre-line;
       line-height: 1.8;
+      color: #5a3e2b;
     }
-    .message-card .verse-block {
+    .message-card .msg-verse {
       margin-top: 18px;
+      background: #fff7ed;
+      border-left: 4px solid #f97316;
+      border-radius: 0 10px 10px 0;
       padding: 14px 18px;
-      background: var(--orange-light);
-      border-left: 4px solid var(--orange);
-      border-radius: 8px;
       font-family: 'Lora', serif;
       font-style: italic;
-      font-size: .97rem;
-      color: var(--text);
+      color: #7c3a10;
+      font-size: 0.98rem;
+      line-height: 1.7;
     }
-    .message-card .meta {
-      margin-top: 16px;
-      font-size: .8rem;
-      color: #b45309;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .message-card .meta::before { content: '🕊'; }
 
+    /* ── PLACEHOLDER ── */
     .placeholder {
       text-align: center;
-      padding: 48px 24px;
+      padding: 48px 20px;
       background: #fff;
       border-radius: 16px;
-      box-shadow: 0 2px 16px var(--shadow);
-      color: var(--muted);
+      box-shadow: 0 2px 16px rgba(196,121,58,0.08);
+      border: 2px dashed #fed7aa;
+    }
+    .placeholder p {
       font-family: 'Lora', serif;
-      font-size: 1.1rem;
       font-style: italic;
+      font-size: 1.15rem;
+      color: #c4793a;
     }
 
     /* ── SUBSCRIBE SECTION ── */
-    .subscribe-box {
-      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+    .subscribe-section {
+      background: linear-gradient(135deg, #f97316, #c4793a);
       border-radius: 20px;
       padding: 40px 36px;
+      margin-top: 48px;
       color: #fff;
       text-align: center;
-      box-shadow: 0 6px 30px rgba(249,115,22,.35);
+      box-shadow: 0 8px 32px rgba(249,115,22,0.25);
     }
-    .subscribe-box h2 {
+    .subscribe-section h2 {
       font-family: 'Lora', serif;
-      font-size: 1.9rem;
-      margin-bottom: 8px;
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      margin-bottom: 10px;
     }
-    .subscribe-box p {
-      opacity: .9;
-      margin-bottom: 28px;
+    .subscribe-section p {
+      opacity: 0.9;
       font-size: 1rem;
+      margin-bottom: 28px;
+      line-height: 1.6;
     }
-    .form-row {
+    .subscribe-form {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       justify-content: center;
     }
-    .form-row input {
-      flex: 1;
-      min-width: 200px;
-      max-width: 260px;
+    .subscribe-form input {
+      flex: 1 1 200px;
       padding: 14px 18px;
-      border: 2px solid rgba(255,255,255,.5);
-      border-radius: 50px;
-      background: rgba(255,255,255,.2);
-      color: #fff;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
-      outline: none;
-      transition: border .2s, background .2s;
-    }
-    .form-row input::placeholder { color: rgba(255,255,255,.75); }
-    .form-row input:focus {
-      border-color: #fff;
-      background: rgba(255,255,255,.3);
-    }
-    .btn-join {
-      padding: 14px 36px;
-      background: #fff;
-      color: var(--orange-dark);
       border: none;
       border-radius: 50px;
       font-family: 'Nunito', sans-serif;
       font-size: 1rem;
+      color: #3d2b1f;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .subscribe-form input::placeholder { color: #a07060; }
+    .subscribe-form button {
+      padding: 14px 32px;
+      border: none;
+      border-radius: 50px;
+      background: #3d2b1f;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-      white-space: nowrap;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-    .btn-join:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0,0,0,.2);
-    }
-    #sub-message {
-      margin-top: 20px;
+    .subscribe-form button:hover { background: #5a3e2b; transform: scale(1.04); }
+    #subscribe-msg {
+      margin-top: 18px;
       font-size: 1.05rem;
       font-weight: 600;
-      min-height: 24px;
+      min-height: 28px;
     }
 
     /* ── FOOTER ── */
     footer {
       text-align: center;
       padding: 30px 20px;
-      background: #3b1a05;
-      color: rgba(255,255,255,.6);
-      font-size: .85rem;
+      color: #a07060;
+      font-size: 0.88rem;
     }
-    footer span { color: var(--orange); }
 
     @media (max-width: 520px) {
-      header { padding: 50px 16px 44px; }
-      .subscribe-box { padding: 28px 20px; }
-      .message-card { padding: 22px 20px; }
+      .message-card { padding: 22px 18px; }
+      .subscribe-section { padding: 30px 20px; }
+      .verse-card { padding: 22px 18px; }
     }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <span class="cross">✝</span>
-  <h1>Walk With God</h1>
-  <p>A community where we learn the Word of God together</p>
-</header>
+  <!-- HEADER -->
+  <header>
+    <span class="header-cross">✝</span>
+    <h1>Walk With God</h1>
+    <p>A community where we learn the Word of God together</p>
+  </header>
 
-<main>
+  <main>
 
-  <!-- DAILY VERSE -->
-  <section>
-    <h2 class="section-title">📖 Verse of the Day</h2>
-    <div class="verse-of-day">
-      <div class="label">Today's Inspiration</div>
-      <blockquote id="daily-verse-text"></blockquote>
-      <cite id="daily-verse-ref"></cite>
+    <!-- DAILY VERSE -->
+    <h2 class="section-title">✨ Verse of the Day</h2>
+    <div class="verse-card">
+      <div class="verse-text" id="daily-verse-text">Loading...</div>
+      <div class="verse-ref" id="daily-verse-ref"></div>
     </div>
-  </section>
 
-  <!-- MESSAGES -->
-  <section>
-    <h2 class="section-title">✉ Messages from Alexandra</h2>
-    <div id="messages-container">
-      <div class="placeholder">Messages coming soon — check back soon 🙏</div>
+    <!-- MESSAGES -->
+    <h2 class="section-title">📖 Messages from Alexandra</h2>
+    <div class="messages-grid" id="messages-container">
+      <div class="placeholder">
+        <p>Messages coming soon — check back soon 🙏</p>
+      </div>
     </div>
-  </section>
 
-  <!-- SUBSCRIBE -->
-  <section>
-    <div class="subscribe-box">
-      <h2>Join the Community 🙏</h2>
-      <p>Receive Alexandra's messages and blessings straight to your inbox.</p>
-      <form id="sub-form">
-        <div class="form-row">
-          <input type="text"  id="sub-name"  placeholder="Your name"         required />
-          <input type="email" id="sub-email" placeholder="Your email address" required />
-          <button type="submit" class="btn-join">Join Us</button>
-        </div>
+    <!-- SUBSCRIBE -->
+    <div class="subscribe-section">
+      <h2>Join the Community 🕊</h2>
+      <p>Receive Alexandra's messages and Bible reflections directly in your inbox.</p>
+      <form class="subscribe-form" id="subscribe-form" onsubmit="handleSubscribe(event)">
+        <input type="text" id="sub-name" placeholder="Your name" required />
+        <input type="email" id="sub-email" placeholder="Your email" required />
+        <button type="submit">Join Us ✝</button>
       </form>
-      <div id="sub-message"></div>
+      <div id="subscribe-msg"></div>
     </div>
-  </section>
 
-</main>
+  </main>
 
-<footer>
-  <p>Made with <span>♥</span> &amp; faith · Walk With God Community © <span id="yr"></span></p>
-</footer>
+  <footer>
+    <p>Made with love &amp; faith · Walk With God Community · <a href="https://alexandradigital.github.io/God_community" style="color:#f97316;">Visit Website</a></p>
+  </footer>
 
-<script>
-  // ── Year
-  document.getElementById('yr').textContent = new Date().getFullYear();
+  <script>
+    // ── DAILY ROTATING VERSES ──
+    const verses = [
+      { text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", ref: "John 3:16" },
+      { text: "The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul.", ref: "Psalm 23:1–3" },
+      { text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.", ref: "Proverbs 3:5–6" },
+      { text: "I can do all this through him who gives me strength.", ref: "Philippians 4:13" },
+      { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9" },
+      { text: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", ref: "Romans 8:28" },
+      { text: "Come to me, all you who are weary and burdened, and I will give you rest.", ref: "Matthew 11:28" }
+    ];
 
-  // ── Daily rotating verse (7 verses, one per day of week)
-  const verses = [
-    { text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",       ref: "Proverbs 3:5–6" },
-    { text: "I can do all this through him who gives me strength.",                                                                                                      ref: "Philippians 4:13" },
-    { text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",                        ref: "John 3:16" },
-    { text: "The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul.",                  ref: "Psalm 23:1–3" },
-    { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",                               ref: "Joshua 1:9" },
-    { text: "Come to me, all you who are weary and burdened, and I will give you rest.",                                                                                 ref: "Matthew 11:28" },
-    { text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",                   ref: "Jeremiah 29:11" },
-  ];
-  const today = new Date().getDay(); // 0=Sun … 6=Sat
-  document.getElementById('daily-verse-text').textContent = '\u201c' + verses[today].text + '\u201d';
-  document.getElementById('daily-verse-ref').textContent = '— ' + verses[today].ref;
+    const dayIndex = new Date().getDay(); // 0=Sun … 6=Sat
+    document.getElementById('daily-verse-text').textContent = verses[dayIndex].text;
+    document.getElementById('daily-verse-ref').textContent = '— ' + verses[dayIndex].ref;
 
-  // ── Messages (injected server-side or stays placeholder)
-  // Currently no messages — placeholder shown by default.
+    // ── SUBSCRIBE HANDLER ──
+    async function handleSubscribe(e) {
+      e.preventDefault();
+      const name = document.getElementById('sub-name').value.trim();
+      const email = document.getElementById('sub-email').value.trim();
+      const msgEl = document.getElementById('subscribe-msg');
+      const btn = e.target.querySelector('button');
 
-  // ── Subscribe form
-  document.getElementById('sub-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const name  = document.getElementById('sub-name').value.trim();
-    const email = document.getElementById('sub-email').value.trim();
-    const msgEl = document.getElementById('sub-message');
-    msgEl.textContent = 'Sending…';
-    try {
-      const res = await fetch('https://hooks.tasklet.ai/whe_xd10av30qct959h8bca4', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email }),
-      });
-      if (res.ok) {
-        msgEl.textContent = 'Thank you! God bless you 🙏';
-        document.getElementById('sub-name').value  = '';
-        document.getElementById('sub-email').value = '';
-      } else {
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      msgEl.textContent = '';
+
+      try {
+        const res = await fetch('https://hooks.tasklet.ai/whe_xd10av30qct959h8bca4', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+        if (res.ok) {
+          msgEl.textContent = 'Thank you! God bless you 🙏';
+          document.getElementById('subscribe-form').reset();
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (err) {
         msgEl.textContent = 'Something went wrong. Please try again.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Join Us ✝';
       }
-    } catch (err) {
-      msgEl.textContent = 'Network error. Please try again later.';
     }
-  });
-</script>
+  </script>
+
 </body>
 </html>
